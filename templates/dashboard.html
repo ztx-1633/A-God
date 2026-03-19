@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>控制台 - A股智能分析平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 全局样式 */
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #f5f5f5;
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-bottom: 2px solid #d4af37;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4af37 !important;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .nav-link {
+            color: #d4af37 !important;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #f4d03f !important;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .navbar-text {
+            color: #d4af37 !important;
+            font-weight: bold;
+        }
+        
+        /* 欢迎区域 */
+        .welcome-section {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #0a0a0a;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+        }
+        
+        .welcome-section h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+        
+        /* 卡片样式 */
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(42, 42, 42, 0.8) 100%);
+            border: 1px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            border-color: #f4d03f;
+        }
+        
+        /* 统计卡片 */
+        .stat-card {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #0a0a0a;
+            text-align: center;
+            border: none;
+        }
+        
+        .stat-card:hover {
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.5);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 功能网格 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(42, 42, 42, 0.8) 100%);
+            border: 1px solid #d4af37;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            border-color: #f4d03f;
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            border-radius: 30px;
+            padding: 12px 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #0a0a0a;
+            border-color: #d4af37;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+        }
+        
+        .btn-outline-secondary {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        .btn-light {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #0a0a0a;
+            border-color: #d4af37;
+        }
+        
+        .btn-light:hover {
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* 进度条 */
+        .progress {
+            height: 15px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .progress-bar {
+            border-radius: 15px;
+            transition: all 0.5s ease;
+        }
+        
+        /* 标题样式 */
+        h5, h6 {
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        /* 文本样式 */
+        .text-muted {
+            color: rgba(212, 175, 55, 0.6) !important;
+        }
+        
+        a {
+            color: #d4af37;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #f4d03f;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            text-decoration: underline;
+        }
+        
+        /* 模态框 */
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #d4af37;
+        }
+        
+        .modal-title {
+            color: #d4af37;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .btn-close {
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+        }
+        
+        /* API文档部分 */
+        .api-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .api-section:last-child {
+            border-bottom: none;
+        }
+        
+        code {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .welcome-section h2 {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            .feature-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">⚜️ A股智能分析平台 ⚜️</a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">欢迎，<span id="username">用户</span></span>
+                <a class="nav-link" href="/logout">退出</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-6">
+        <!-- 欢迎区域 -->
+        <div class="welcome-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2>✨ 控制台 ✨</h2>
+                        <p class="lead">欢迎使用A股智能分析平台，开始您的投资分析之旅</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-light btn-lg" onclick="location.href='/'">
+                            🚀 开始分析
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="dashboard-card stat-card">
+                    <div class="stat-number" id="api-calls-today">0</div>
+                    <div>今日API调用</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card stat-card">
+                    <div class="stat-number" id="api-calls-limit">10</div>
+                    <div>每日限额</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card stat-card">
+                    <div class="stat-number" id="days-used">0</div>
+                    <div>使用天数</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用情况 -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h5>📈 今日使用情况</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>API调用进度</span>
+                        <span><span id="usage-percentage">0</span>%</span>
+                    </div>
+                    <div class="progress mb-4">
+                        <div class="progress-bar" role="progressbar" id="usage-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <small class="text-muted">
+                        已使用 <span id="used-calls">0</span> / <span id="total-calls">10</span> 次调用
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h5>🎯 快速操作</h5>
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-primary" onclick="location.href='/'">
+                            📊 开始股票分析
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="viewApiDocs()">
+                            📖 查看API文档
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能展示 -->
+        <div class="dashboard-card">
+            <h5>🚀 平台功能</h5>
+            <div class="feature-grid">
+                <div class="feature-card" onclick="location.href='/'">
+                    <div class="feature-icon">📈</div>
+                    <h6>技术分析</h6>
+                    <p class="text-muted">RSI、MACD、布林带等20+种技术指标</p>
+                </div>
+                <div class="feature-card" onclick="location.href='/'">
+                    <div class="feature-icon">🏢</div>
+                    <h6>基本面分析</h6>
+                    <p class="text-muted">财务比率、风险评估、投资价值分析</p>
+                </div>
+                <div class="feature-card" onclick="location.href='/'">
+                    <div class="feature-icon">🌱</div>
+                    <h6>ESG分析</h6>
+                    <p class="text-muted">环境、社会、治理因子评估</p>
+                </div>
+                <div class="feature-card" onclick="location.href='/'">
+                    <div class="feature-icon">🔗</div>
+                    <h6>产业链分析</h6>
+                    <p class="text-muted">上下游关系、协同效应分析</p>
+                </div>
+                <div class="feature-card" onclick="location.href='/'">
+                    <div class="feature-icon">🤖</div>
+                    <h6>AI预测</h6>
+                    <p class="text-muted">深度学习价格预测模型</p>
+                </div>
+                <div class="feature-card" onclick="viewApiDocs()">
+                    <div class="feature-icon">🔌</div>
+                    <h6>API接口</h6>
+                    <p class="text-muted">开发者友好的RESTful API</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近分析记录 -->
+        <div class="dashboard-card">
+            <h5>📋 最近分析记录</h5>
+            <div id="recent-analysis">
+                <p class="text-muted text-center py-6">暂无分析记录，<a href="/">开始您的第一次分析</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- API文档模态框 -->
+    <div class="modal fade" id="apiDocsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📖 API接口文档</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="api-section">
+                        <h6>🏥 健康检查</h6>
+                        <code>GET /api/health</code>
+                        <p class="text-muted">检查服务状态</p>
+                    </div>
+                    <div class="api-section">
+                        <h6>📊 市场概览</h6>
+                        <code>GET /api/market/overview</code>
+                        <p class="text-muted">获取市场整体情况</p>
+                    </div>
+                    <div class="api-section">
+                        <h6>📈 技术分析</h6>
+                        <code>GET /api/stocks/{symbol}/technical</code>
+                        <p class="text-muted">获取股票技术分析结果</p>
+                    </div>
+                    <div class="api-section">
+                        <h6>🏢 基本面分析</h6>
+                        <code>GET /api/stocks/{symbol}/fundamental</code>
+                        <p class="text-muted">获取股票基本面分析</p>
+                    </div>
+                    <div class="api-section">
+                        <h6>🔮 价格预测</h6>
+                        <code>GET /api/predict/{symbol}</code>
+                        <p class="text-muted">获取AI价格预测结果</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserInfo();
+        });
+
+        function loadUserInfo() {
+            fetch('/api/user/info')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(response) {
+                    if (response.success) {
+                        updateDashboard(response.user);
+                    }
+                })
+                .catch(function() {
+                    // 如果获取用户信息失败，可能未登录
+                    window.location.href = '/login';
+                });
+        }
+
+        function updateDashboard(user) {
+            // 更新用户名
+            document.getElementById('username').textContent = user.username;
+
+            // 更新统计数据
+            document.getElementById('api-calls-today').textContent = user.api_calls_today || 0;
+            
+            const limits = {
+                'free': 10,
+                'basic': 100,
+                'premium': 1000,
+                'professional': '∞'
+            };
+
+            document.getElementById('api-calls-limit').textContent = limits[user.membership_level] || 10;
+
+            // 计算使用天数
+            const regDate = new Date(user.registration_date);
+            const today = new Date();
+            const diffDays = Math.ceil((today - regDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-used').textContent = diffDays;
+
+            // 更新使用进度
+            const used = user.api_calls_today || 0;
+            const limit = limits[user.membership_level] === '∞' ? 1000 : (limits[user.membership_level] || 10);
+            const percentage = limit === '∞' ? 0 : Math.round((used / limit) * 100);
+            
+            document.getElementById('usage-percentage').textContent = percentage;
+            document.getElementById('usage-progress-bar').style.width = percentage + '%';
+            document.getElementById('used-calls').textContent = used;
+            document.getElementById('total-calls').textContent = limit === '∞' ? '∞' : limit;
+
+            // 根据使用情况更新进度条颜色
+            const progressBar = document.getElementById('usage-progress-bar');
+            progressBar.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+            if (percentage < 50) {
+                progressBar.classList.add('bg-success');
+            } else if (percentage < 80) {
+                progressBar.classList.add('bg-warning');
+            } else {
+                progressBar.classList.add('bg-danger');
+            }
+        }
+
+        function viewApiDocs() {
+            const modal = new bootstrap.Modal(document.getElementById('apiDocsModal'));
+            modal.show();
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

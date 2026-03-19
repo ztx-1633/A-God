@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会员套餐 - A股智能分析平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        /* 全局样式 */
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #f5f5f5;
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-bottom: 2px solid #d4af37;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4af37 !important;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .nav-link {
+            color: #d4af37 !important;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #f4d03f !important;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* 页头 */
+        .pricing-header {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #0a0a0a;
+            padding: 100px 0;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+        }
+        
+        .pricing-header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+        }
+        
+        .pricing-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* 卡片样式 */
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(42, 42, 42, 0.8) 100%);
+            border: 1px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+            border-color: #f4d03f;
+        }
+        
+        .pricing-card.featured {
+            border: 3px solid #d4af37;
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.4);
+        }
+        
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+        
+        /* 卡片头部 */
+        .card-header {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #0a0a0a;
+            text-align: center;
+            padding: 40px;
+            border: none;
+        }
+        
+        .featured .card-header {
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        .price {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .period {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        /* 功能列表 */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-list li:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-check {
+            color: #27ae60;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .feature-cross {
+            color: #e74c3c;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        /* 按钮样式 */
+        .btn-upgrade {
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 30px;
+            color: #0a0a0a;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+        }
+        
+        .current-plan {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+        }
+        
+        /* 使用统计 */
+        .usage-stats {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(42, 42, 42, 0.8) 100%);
+            border: 1px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .stat-label {
+            color: rgba(212, 175, 55, 0.8);
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+        
+        /* 模态框 */
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid #d4af37;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #d4af37;
+        }
+        
+        .modal-title {
+            color: #d4af37;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .btn-close {
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+        }
+        
+        /* 支付按钮 */
+        .btn-outline-success,
+        .btn-outline-primary {
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            border-radius: 30px;
+            padding: 12px 24px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-success:hover,
+        .btn-outline-primary:hover {
+            background: #d4af37;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* 协议链接 */
+        .agreement-link {
+            color: #d4af37;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .agreement-link:hover {
+            color: #f4d03f;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            text-decoration: underline;
+        }
+        
+        /* 复选框 */
+        .form-check-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #d4af37;
+        }
+        
+        .form-check-input:checked {
+            background: #d4af37;
+            border-color: #d4af37;
+        }
+        
+        .form-check-label {
+            color: rgba(212, 175, 55, 0.8);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .pricing-card.featured {
+                transform: none;
+            }
+            
+            .price {
+                font-size: 3rem;
+            }
+            
+            .pricing-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">⚜️ A股智能分析平台 ⚜️</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">控制台</a>
+                <a class="nav-link" href="/logout">退出</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页头 -->
+    <div class="pricing-header">
+        <div class="container">
+            <h1>✨ 选择适合您的奢华套餐 ✨</h1>
+            <p class="lead">解锁更多高级功能，获得尊贵的投资分析体验</p>
+        </div>
+    </div>
+
+    <div class="container mt-8">
+        <!-- 使用统计 -->
+        <div class="usage-stats" id="usage-stats" style="display: none;">
+            <h4 class="text-center mb-6 text-gold">📊 今日使用情况</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-number" id="api-calls-used">0</div>
+                        <div class="stat-label">已使用 API 调用</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-number" id="api-calls-limit">10</div>
+                        <div class="stat-label">每日限额</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-number" id="current-plan">免费版</div>
+                        <div class="stat-label">当前套餐</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 套餐价格 -->
+        <div class="row">
+            <!-- 免费版 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card pricing-card">
+                    <div class="card-header">
+                        <h3>免费版</h3>
+                        <div class="price">¥0</div>
+                        <div class="period">永久免费</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><span class="feature-check">✓</span>每日10次API调用</li>
+                            <li><span class="feature-check">✓</span>基础技术分析</li>
+                            <li><span class="feature-check">✓</span>简单预测功能</li>
+                            <li><span class="feature-cross">✗</span>实时数据</li>
+                            <li><span class="feature-cross">✗</span>高级分析</li>
+                            <li><span class="feature-cross">✗</span>个性化推荐</li>
+                        </ul>
+                        <button class="btn btn-upgrade current-plan" disabled>
+                            当前套餐
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 基础版 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card pricing-card">
+                    <div class="card-header">
+                        <h3>基础版</h3>
+                        <div class="price">¥9</div>
+                        <div class="period">/ 月</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><span class="feature-check">✓</span>每日100次API调用</li>
+                            <li><span class="feature-check">✓</span>完整技术分析</li>
+                            <li><span class="feature-check">✓</span>基本面分析</li>
+                            <li><span class="feature-check">✓</span>实时数据</li>
+                            <li><span class="feature-cross">✗</span>ESG分析</li>
+                            <li><span class="feature-cross">✗</span>产业链分析</li>
+                        </ul>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="auto-renew-basic" onchange="updateBasicPrice()">
+                            <label class="form-check-label" for="auto-renew-basic">
+                                自动续费（首月仅需 ¥5）
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <a href="/auto-renew-agreement" target="_blank" class="agreement-link">查看自动续费服务协议</a>
+                        </div>
+                        <div class="mb-3">
+                            <a href="/legal/auto_renew_disclaimer.txt" target="_blank" class="agreement-link">查看法律声明</a>
+                        </div>
+                        <button class="btn btn-upgrade" onclick="subscribePlan('basic', 9, document.getElementById('auto-renew-basic').checked)">
+                            升级到基础版
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高级版 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card pricing-card featured">
+                    <div class="card-header">
+                        <h3>高级版</h3>
+                        <div class="price">¥59</div>
+                        <div class="period">/ 月</div>
+                        <div class="badge bg-warning text-dark mt-3" style="font-size: 1rem; padding: 8px 16px;">✨ 最受欢迎 ✨</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><span class="feature-check">✓</span>每日1000次API调用</li>
+                            <li><span class="feature-check">✓</span>完整技术分析</li>
+                            <li><span class="feature-check">✓</span>深度基本面分析</li>
+                            <li><span class="feature-check">✓</span>ESG评估分析</li>
+                            <li><span class="feature-check">✓</span>产业链分析</li>
+                            <li><span class="feature-check">✓</span>AI智能预测</li>
+                        </ul>
+                        <button class="btn btn-upgrade" onclick="subscribePlan('premium', 59)">
+                            升级到高级版
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 专业版 -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card pricing-card">
+                    <div class="card-header">
+                        <h3>专业版</h3>
+                        <div class="price">¥299</div>
+                        <div class="period">/ 月</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="feature-list">
+                            <li><span class="feature-check">✓</span>无限制API调用</li>
+                            <li><span class="feature-check">✓</span>所有分析功能</li>
+                            <li><span class="feature-check">✓</span>个性化投资建议</li>
+                            <li><span class="feature-check">✓</span>专属客服支持</li>
+                            <li><span class="feature-check">✓</span>数据导出功能</li>
+                            <li><span class="feature-check">✓</span>API接口访问</li>
+                        </ul>
+                        <button class="btn btn-upgrade" onclick="subscribePlan('professional', 299)">
+                            升级到专业版
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 企业版 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card pricing-card">
+                        <div class="card-header">
+                            <h3>企业版</h3>
+                            <div class="price">¥999</div>
+                            <div class="period">/ 月</div>
+                            <div class="badge bg-danger text-white mt-3" style="font-size: 1rem; padding: 8px 16px;">💎 企业级服务</div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="feature-list">
+                                <li><span class="feature-check">✓</span>无限制API调用</li>
+                                <li><span class="feature-check">✓</span>所有分析功能</li>
+                                <li><span class="feature-check">✓</span>个性化投资建议</li>
+                                <li><span class="feature-check">✓</span>专属客服支持</li>
+                                <li><span class="feature-check">✓</span>数据导出功能</li>
+                                <li><span class="feature-check">✓</span>API接口访问</li>
+                                <li><span class="feature-check">✓</span>多用户支持</li>
+                                <li><span class="feature-check">✓</span>定制化解决方案</li>
+                            </ul>
+                            <button class="btn btn-upgrade" onclick="subscribePlan('enterprise', 999)">
+                                升级到企业版
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 支付模态框 -->
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">💳 订阅确认</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <h4 id="plan-name" style="color: #d4af37;"></h4>
+                        <div class="price mb-4">
+                            ¥<span id="plan-price"></span> / 月
+                        </div>
+                        <p class="text-muted">选择支付方式：</p>
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-outline-success w-100 mb-3" onclick="showQRCode('wechat')">
+                                    💚 微信支付
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-outline-primary w-100 mb-3" onclick="showQRCode('alipay')">
+                                    💙 支付宝
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收款码模态框 -->
+    <div class="modal fade" id="qrCodeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="color: #d4af37;">用微信扫付款</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="qr-code-container">
+                        <img id="qr-code-image" src="" alt="收款码" class="img-fluid mb-4" style="max-width: 350px; border: 2px solid #d4af37; border-radius: 15px; padding: 20px; background: white;">
+                    </div>
+                    <p class="text-muted">请使用微信或支付宝扫描上方二维码完成支付</p>
+                    <p class="fw-bold" style="color: #d4af37;">支付金额: ¥<span id="qr-code-amount"></span></p>
+                    <button class="btn btn-upgrade mt-4" onclick="confirmPayment()">我已完成支付</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPlan = null;
+        let selectedPrice = null;
+
+        // 页面加载时获取用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserInfo();
+        });
+
+        function loadUserInfo() {
+            fetch('/api/user/info')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (data.success) {
+                        updateUsageStats(data.user);
+                        updateCurrentPlan(data.user.membership_level);
+                    }
+                })
+                .catch(function() {
+                    // 如果获取用户信息失败，可能未登录
+                    window.location.href = '/login';
+                });
+        }
+
+        function updateUsageStats(user) {
+            document.getElementById('usage-stats').style.display = 'block';
+            document.getElementById('api-calls-used').textContent = user.api_calls_today || 0;
+            
+            const limits = {
+                'free': 10,
+                'basic': 100,
+                'premium': 1000,
+                'professional': 5000,
+                'enterprise': '∞'
+            };
+            
+            document.getElementById('api-calls-limit').textContent = limits[user.membership_level] || 10;
+            
+            const planNames = {
+                'free': '免费版',
+                'basic': '基础版',
+                'premium': '高级版',
+                'professional': '专业版',
+                'enterprise': '企业版'
+            };
+            
+            document.getElementById('current-plan').textContent = planNames[user.membership_level] || '免费版';
+        }
+
+        function updateCurrentPlan(membershipLevel) {
+            // 移除所有.btn-upgrade元素的current-plan类，启用所有按钮
+            const upgradeButtons = document.querySelectorAll('.btn-upgrade');
+            upgradeButtons.forEach(function(button) {
+                button.classList.remove('current-plan');
+                button.disabled = false;
+                // 恢复原始文本
+                if (button.dataset.originalText) {
+                    button.textContent = button.dataset.originalText;
+                }
+            });
+
+            // 找到当前套餐并标记
+            const planButtons = {
+                'free': 0,
+                'basic': 1,
+                'premium': 2,
+                'professional': 3,
+                'enterprise': 4
+            };
+
+            const currentIndex = planButtons[membershipLevel] || 0;
+            
+            if (upgradeButtons[currentIndex]) {
+                const currentButton = upgradeButtons[currentIndex];
+                // 保存原始文本
+                currentButton.dataset.originalText = currentButton.textContent;
+                currentButton.classList.add('current-plan');
+                currentButton.disabled = true;
+                currentButton.textContent = '当前套餐';
+            }
+        }
+
+        function subscribePlan(planType, price, autoRenew = false) {
+            selectedPlan = planType;
+            selectedPrice = price;
+            selectedAutoRenew = autoRenew;
+
+            const planNames = {
+                'basic': '基础版',
+                'premium': '高级版',
+                'professional': '专业版',
+                'enterprise': '企业版'
+            };
+
+            document.getElementById('plan-name').textContent = planNames[planType];
+            document.getElementById('plan-price').textContent = autoRenew && planType === 'basic' ? 5 : price;
+            
+            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            modal.show();
+        }
+        
+        function updateBasicPrice() {
+            const autoRenewCheckbox = document.getElementById('auto-renew-basic');
+            const upgradeButton = document.querySelector('.card:nth-child(2) .btn-upgrade'); // 基础版的按钮
+            
+            if (autoRenewCheckbox.checked) {
+                upgradeButton.innerHTML = '升级到基础版 (首月¥5)';
+            } else {
+                upgradeButton.innerHTML = '升级到基础版';
+            }
+        }
+
+        function showQRCode(paymentMethod) {
+            // 隐藏支付选择模态框
+            const paymentModal = document.getElementById('paymentModal');
+            const modalInstance = bootstrap.Modal.getInstance(paymentModal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+
+            // 设置收款码图片路径
+            let qrCodeImage = '';
+            if (paymentMethod === 'wechat') {
+                qrCodeImage = '/static/images/收款码.jpg';
+            } else if (paymentMethod === 'alipay') {
+                qrCodeImage = '/static/images/alipay.jpg';
+            }
+
+            // 设置收款码图片和金额
+            document.getElementById('qr-code-image').src = qrCodeImage;
+            document.getElementById('qr-code-amount').textContent = selectedPrice;
+
+            // 设置模态框标题
+            if (paymentMethod === 'wechat') {
+                document.querySelector('#qrCodeModal .modal-title').textContent = '用微信扫付款';
+            } else if (paymentMethod === 'alipay') {
+                document.querySelector('#qrCodeModal .modal-title').textContent = '用支付宝扫付款';
+            }
+
+            // 显示收款码模态框
+            const qrCodeModal = document.getElementById('qrCodeModal');
+            const qrModalInstance = new bootstrap.Modal(qrCodeModal);
+            qrModalInstance.show();
+        }
+
+        function confirmPayment() {
+            // 隐藏收款码模态框
+            const qrCodeModal = document.getElementById('qrCodeModal');
+            const qrModalInstance = bootstrap.Modal.getInstance(qrCodeModal);
+            if (qrModalInstance) {
+                qrModalInstance.hide();
+            }
+
+            // 显示支付处理中
+            showAlert('支付处理中...', 'info');
+
+            // 发送订阅请求
+            fetch('/api/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    plan_type: selectedPlan,
+                    amount: selectedAutoRenew && selectedPlan === 'basic' ? 5 : selectedPrice,
+                    payment_method: 'manual',
+                    auto_renew: selectedAutoRenew
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showAlert('订阅成功！正在刷新页面...', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showAlert(data.message || '订阅失败，请重试', 'danger');
+                }
+            })
+            .catch(function() {
+                showAlert('网络错误，请稍后重试', 'danger');
+            });
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x" 
+                     style="z-index: 9999; margin-top: 20px;" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+            
+            // 3秒后自动消失
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                });
+            }, 3000);
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
